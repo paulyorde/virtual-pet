@@ -11,6 +11,7 @@ package main.java;
 import java.util.*;
 
 public class VirtualPet {
+    private static final int MAX_POINTS_ALLOWED = 10;
     private int hungerPoints;
     private int sleepyPoints;
     private int thirstPoints;
@@ -25,16 +26,12 @@ public class VirtualPet {
     TimerTask task = getTimerTask();
 
     public VirtualPet() {
-        hungerPoints = generateRandomPoint();
-        sleepyPoints  = generateRandomPoint();
-        thirstPoints  =  generateRandomPoint();
-        boredPoints   = generateRandomPoint();
-        ignoredPoints = generateRandomPoint();
+        hungerPoints  = generateRandomNumber();
+        sleepyPoints  = generateRandomNumber();
+        thirstPoints  = generateRandomNumber();
+        boredPoints   = generateRandomNumber();
+        ignoredPoints = generateRandomNumber();
         tick();
-    }
-
-    public int getTicker() {
-        return ticker;
     }
 
     public int getSleepyPoints() {
@@ -62,54 +59,53 @@ public class VirtualPet {
     }
 
     public void rubEars() {
-        if(ticker > 3 && sleepyPoints > 9) {
-            endGamePoints = 10;
-        }
+        checkElapsedTimeToGamePoints();
         sleepyPoints--;
-        hungerPoints += generateRandomPoint();
-        thirstPoints += generateRandomPoint();
+        hungerPoints += generateRandomNumber();
+        thirstPoints += generateRandomNumber();
     }
 
     public void feed() {
-        if(ticker > 5 && hungerPoints > 9) {
-            endGamePoints = 10;
-        }
+        checkElapsedTimeToGamePoints();
         hungerPoints--;
         thirstPoints++;
-        sleepyPoints -= generateRandomPoint();
+        sleepyPoints -= generateRandomNumber();
     }
 
     public void water() {
-        if(ticker > 7 && thirstPoints > 9) {
-            endGamePoints = 10;
-        }
+        checkElapsedTimeToGamePoints();
         hungerPoints++;
         thirstPoints--;
-        sleepyPoints += generateRandomPoint();
+        sleepyPoints += generateRandomNumber();
     }
 
     public void playWith() {
-        if(ticker > 9 && boredPoints > 9) {
-            endGamePoints = 10;
-        }
-        hungerPoints += generateRandomPoint();
+        checkElapsedTimeToGamePoints();
+        hungerPoints += generateRandomNumber();
         thirstPoints++;
-        sleepyPoints += generateRandomPoint();
+        sleepyPoints += generateRandomNumber();
     }
 
     public void ignore() {
-        if(ticker > 11 && ignoredPoints > 9) {
-            endGamePoints = 10;
+        checkElapsedTimeToGamePoints();
+        thirstPoints += generateRandomNumber();
+        sleepyPoints += generateRandomNumber();
+        ignoredPoints += generateRandomNumber();
+    }
+
+    public int generateRandomNumber() {
+        return pointGenerator.nextInt(MAX_POINTS_ALLOWED);
+    }
+
+    private void checkElapsedTimeToGamePoints() {
+        if(isTimerUp()) {
+            endGamePoints = MAX_POINTS_ALLOWED;
         }
-        thirstPoints += generateRandomPoint();
-        sleepyPoints += generateRandomPoint();
-        ignoredPoints += generateRandomPoint();
     }
 
-    public int generateRandomPoint() {
-        return pointGenerator.nextInt(10);
+    private boolean isTimerUp() {
+        return (ticker > generateRandomNumber()) && (sleepyPoints == MAX_POINTS_ALLOWED);
     }
-
 
     public void tick() {
         timer.scheduleAtFixedRate(task, 1000, 1000);

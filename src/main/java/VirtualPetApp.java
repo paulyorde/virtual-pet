@@ -41,17 +41,29 @@ public class VirtualPetApp {
     }
 
     private String promptAction() {
-        System.out.println();
-        System.out.println("Options are: ");
+        displayOptionsHeaderMessage();
+        displayMenuOptions();
+        String choice = optionsPrompt();
+        return choice.trim().toLowerCase();
+    }
+
+    private void displayMenuOptions() {
         for(Map.Entry<String, String> option : menu.entrySet()) {
             System.out.printf("%s - %s %n",
                     option.getKey(),
                     option.getValue());
         }
+    }
+
+    private String optionsPrompt() {
         System.out.println();
         System.out.print("What do want to do?: ");
-        String choice = input.next();
-        return choice.trim().toLowerCase();
+        return input.next();
+    }
+
+    private void displayOptionsHeaderMessage() {
+        System.out.println();
+        System.out.println("Options are: ");
     }
 
     private void respondTo(String choice) {
